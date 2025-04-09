@@ -1,7 +1,8 @@
-
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <cstdlib>
+#include <limits>
 
 using namespace std;
 
@@ -17,20 +18,32 @@ struct Alumno {
     string apellido;
     string direccion;
     string edad;
-
 };
 
-struct Escuela
-{
+struct Escuela {
     Alumno alumnos[10];
     Curso cursos[10];
-    int cantidadAlumnosActual=0;
-    int cantidadCursosActual=0;
-
+    int cantidadAlumnosActual = 0;
+    int cantidadCursosActual = 0;
 };
 
+// Limpiar pantalla
+void limpiarPantalla() {
+    #ifdef _WIN32
+        system("cls");
+    #else
+        system("clear");
+    #endif
+}
 
-/// Función para sobrescribir en un archivo
+// Pausar ejecución
+void pausar() {
+    cout << "\nPresione ENTER para continuar...";
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    cin.get();
+}
+
+// Función para sobrescribir en un archivo
 void escribirArchivo(const string& nombreArchivo, const string& texto) {
     ofstream archivo(nombreArchivo, ios::out);
     if (!archivo) {
@@ -41,7 +54,7 @@ void escribirArchivo(const string& nombreArchivo, const string& texto) {
     archivo.close();
 }
 
-/// Función para leer un archivo
+// Función para leer un archivo
 string leerArchivo(const string& nombreArchivo) {
     ifstream archivo(nombreArchivo, ios::in);
     if (!archivo) {
@@ -58,7 +71,7 @@ string leerArchivo(const string& nombreArchivo) {
     return texto;
 }
 
-/// Función para agregar texto a un archivo
+// Función para agregar texto a un archivo
 void agregarArchivo(const string& nombreArchivo, const string& texto) {
     ofstream archivo(nombreArchivo, ios::app);
     if (!archivo) {
@@ -69,169 +82,180 @@ void agregarArchivo(const string& nombreArchivo, const string& texto) {
     archivo.close();
 }
 
-/// Función para registrar un curso
+// Función para registrar un curso
 Curso leerCurso() {
     Curso curso;
-    cin.ignore(); // Ignorar buffer previo
-
     cout << "Ingrese datos del curso a registrar\n";
     cout << "1. Nombre del curso: "; getline(cin, curso.nombreCurso);
     cout << "2. Ciclo del curso: "; getline(cin, curso.cicloCurso);
     cout << "3. Tipo de curso: "; getline(cin, curso.tipoCurso);
     cout << "4. Escuela del curso: "; getline(cin, curso.escuela);
-
     return curso;
 }
 
-/// Función para mostrar los cursos
+// Función para mostrar los cursos
 void mostrarCurso(const string& nombreArchivo) {
-    cout << "Nombre del curso\tCiclo del curso\tTipo de curso\tEscuela de curso\n";
     cout << leerArchivo(nombreArchivo);
 }
 
-/// Función para agregar cursos electivos
+// Función para agregar cursos electivos
 Curso agregarCursoElectivo(const string& nombreArchivo) {
     Curso curso;
-    cin.ignore();
-
     cout << "Ingrese datos del curso electivo\n";
     cout << "1. Nombre del curso: "; getline(cin, curso.nombreCurso);
     cout << "2. Ciclo del curso: "; getline(cin, curso.cicloCurso);
     curso.tipoCurso = "Electivo";
     cout << "3. Escuela del curso: "; getline(cin, curso.escuela);
-
     return curso;
-
 }
 
-/// Función para registrar un alumno
+// Función para registrar un alumno
 Alumno leerAlumno() {
     Alumno alumno;
-    int numCursos;
-
-    cin.ignore();
     cout << "Ingrese los datos del alumno a registrar\n";
     cout << "1. Nombre: "; getline(cin, alumno.nombre);
     cout << "2. Apellido: "; getline(cin, alumno.apellido);
     cout << "3. Dirección: "; getline(cin, alumno.direccion);
     cout << "4. Edad: "; getline(cin, alumno.edad);
-
     return alumno;
 }
 
-/// Función para mostrar alumnos
+// Función para mostrar alumnos
 void mostrarAlumno(const string& nombreArchivo) {
-    cout << "Nombre\tApellido\tDirección\tEdad\n";
     cout << leerArchivo(nombreArchivo);
 }
 
-/// Función principal con menú
+// Función principal con menú
 int main() {
     string archivoCursos = "cursos.txt";
     string archivoAlumnos = "alumnos.txt";
 
     Escuela escuela;
-
     int opcion;
 
     do {
-        cout << "\nMENU DE OPCIONES\n---------------------\n";
-        cout << "1. Almacenar cursos\n";
+        limpiarPantalla();
+        cout << "========================================\n";
+        cout << "         SISTEMA DE GESTIÓN ESCOLAR     \n";
+        cout << "========================================\n";
+        cout << "1. Registrar cursos\n";
         cout << "2. Mostrar cursos\n";
         cout << "3. Agregar cursos electivos\n";
-        cout << "4. Registrar Alumnos\n";
-        cout << "5. Mostrar Alumnos\n";
+        cout << "4. Registrar alumnos\n";
+        cout << "5. Mostrar alumnos\n";
         cout << "6. Salir\n";
+        cout << "----------------------------------------\n";
         cout << "Seleccione una opción: ";
         cin >> opcion;
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        limpiarPantalla();
 
         switch (opcion) {
-            case 1:{
+            case 1: {
                 int cantidadCursos;
-                cout << "Ingrese la cantidad de cursos a registrar: ";
+                cout << "REGISTRO DE CURSOS\n------------------\n";
+                cout << "Cantidad de cursos a registrar: ";
                 cin >> cantidadCursos;
-                cin.ignore();
-                //guardar temporalmete cursos en array cursos de escuela
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-                for(int i=0;i<cantidadCursos;i++)
-                    {escuela.cursos[i]=leerCurso();}
-
-                string texto="";
-                for(int i=0;i<cantidadCursos;i++)
-                {
-                    texto+=escuela.cursos[i].cicloCurso+"\t"+escuela.cursos[i].escuela+"\t"
-                          +escuela.cursos[i].nombreCurso+"\t"+escuela.cursos[i].tipoCurso+"\n";
+                for (int i = 0; i < cantidadCursos; i++) {
+                    cout << "\nCurso " << (i + 1) << ":\n";
+                    escuela.cursos[i] = leerCurso();
                 }
-                escribirArchivo(archivoCursos,texto);
 
-                escuela.cantidadCursosActual+=cantidadCursos;
+                string texto = "";
+                for (int i = 0; i < cantidadCursos; i++) {
+                    texto += escuela.cursos[i].nombreCurso + "\t" +
+                             escuela.cursos[i].cicloCurso + "\t" +
+                             escuela.cursos[i].tipoCurso + "\t" +
+                             escuela.cursos[i].escuela + "\n";
+                }
 
-                cout << "Cursos registrados exitosamente\n";
+                escribirArchivo(archivoCursos, texto);
+                escuela.cantidadCursosActual += cantidadCursos;
 
+                cout << "\nCursos registrados correctamente.\n";
+                pausar();
                 break;
-                }
-            case 2:{
-                cout << "MOSTRANDO CURSOS\n-----------------\n";
+            }
+            case 2: {
+                cout << "LISTA DE CURSOS\n--------------------------\n";
+                cout << "Nombre\tCiclo\tTipo\tEscuela\n";
                 mostrarCurso(archivoCursos);
+                pausar();
                 break;
-                }
-
-
-            case 3:{
+            }
+            case 3: {
                 int cantCursosElectivos;
-                cout << "Ingrese la cantidad de cursos electivos a registrar: ";
+                cout << "AGREGAR CURSOS ELECTIVOS\n------------------------\n";
+                cout << "Cantidad de cursos electivos: ";
                 cin >> cantCursosElectivos;
-                cin.ignore();
-                for (int i = escuela.cantidadCursosActual; i < escuela.cantidadCursosActual+cantCursosElectivos; i++)
-                     escuela.cursos[i]=leerCurso();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-                     string texto="";
-                for(int i = escuela.cantidadCursosActual; i < escuela.cantidadCursosActual+cantCursosElectivos; i++)
-                    {
-                        texto+=escuela.cursos[i].cicloCurso+"\t"+escuela.cursos[i].escuela+"\t"
-                          +escuela.cursos[i].nombreCurso+"\t"+escuela.cursos[i].tipoCurso+"\n";
-                    }
-                    agregarArchivo(archivoCursos,texto);
-                    escuela.cantidadCursosActual+=cantCursosElectivos;
-
-                cout << "Cursos electivos agregados exitosamente\n";
-                break;
+                for (int i = escuela.cantidadCursosActual; i < escuela.cantidadCursosActual + cantCursosElectivos; i++) {
+                    cout << "\nCurso electivo " << (i - escuela.cantidadCursosActual + 1) << ":\n";
+                    escuela.cursos[i] = agregarCursoElectivo(archivoCursos);
                 }
-            case 4:{
+
+                string texto = "";
+                for (int i = escuela.cantidadCursosActual; i < escuela.cantidadCursosActual + cantCursosElectivos; i++) {
+                    texto += escuela.cursos[i].nombreCurso + "\t" +
+                             escuela.cursos[i].cicloCurso + "\t" +
+                             escuela.cursos[i].tipoCurso + "\t" +
+                             escuela.cursos[i].escuela + "\n";
+                }
+
+                agregarArchivo(archivoCursos, texto);
+                escuela.cantidadCursosActual += cantCursosElectivos;
+
+                cout << "\nCursos electivos agregados correctamente.\n";
+                pausar();
+                break;
+            }
+            case 4: {
                 int cantidadAlumnos;
-                cout << "Ingrese la cantidad de alumnos a registrar: ";
+                cout << "REGISTRO DE ALUMNOS\n-------------------\n";
+                cout << "Cantidad de alumnos a registrar: ";
                 cin >> cantidadAlumnos;
-                for (int i = 0; i < cantidadAlumnos; i++)
-                    escuela.alumnos[i]=leerAlumno();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-                string texto="";
-                for(int i=escuela.cantidadAlumnosActual;i<escuela.cantidadAlumnosActual+cantidadAlumnos;i++)
-                {
-                    texto+=escuela.alumnos[i].nombre+"\t"+escuela.alumnos[i].apellido+"\t"
-                          +escuela.alumnos[i].direccion+"\t"+escuela.alumnos[i].edad+"\n";
-
+                for (int i = 0; i < cantidadAlumnos; i++) {
+                    cout << "\nAlumno " << (i + 1) << ":\n";
+                    escuela.alumnos[i] = leerAlumno();
                 }
 
-                escribirArchivo(archivoAlumnos,texto);
+                string texto = "";
+                for (int i = escuela.cantidadAlumnosActual; i < escuela.cantidadAlumnosActual + cantidadAlumnos; i++) {
+                    texto += escuela.alumnos[i].nombre + "\t" +
+                             escuela.alumnos[i].apellido + "\t" +
+                             escuela.alumnos[i].direccion + "\t" +
+                             escuela.alumnos[i].edad + "\n";
+                }
 
-                escuela.cantidadAlumnosActual+=cantidadAlumnos;
+                escribirArchivo(archivoAlumnos, texto);
+                escuela.cantidadAlumnosActual += cantidadAlumnos;
 
-                cout << "Alumnos registrados exitosamente\n";
+                cout << "\nAlumnos registrados correctamente.\n";
+                pausar();
                 break;
-                }
-            case 5:{
-                cout << "MOSTRANDO ALUMNOS\n-----------------\n";
+            }
+            case 5: {
+                cout << "LISTA DE ALUMNOS\n--------------------------\n";
+                cout << "Nombre\tApellido\tDirección\tEdad\n";
                 mostrarAlumno(archivoAlumnos);
+                pausar();
                 break;
-                }
+            }
             case 6:
                 cout << "Saliendo del programa...\n";
                 break;
-
             default:
-                cout << "Opción no válida, intente de nuevo\n";
+                cout << "Opción no válida. Intente de nuevo.\n";
+                pausar();
         }
+
     } while (opcion != 6);
 
     return 0;
 }
+
